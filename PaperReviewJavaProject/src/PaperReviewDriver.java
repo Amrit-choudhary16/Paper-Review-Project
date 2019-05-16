@@ -21,20 +21,30 @@ public class PaperReviewDriver {
 //            following data (columns): Paper.Id, Paper.Title, Paper.Abstract, Author.EmailAddress,
 //            Author.FirstName, Author.LastName
             getPaperAuthorDetailsByAuthorId("jamespatterson@author.com", conn);
+            lineSpacing();
 
 //            Get all reviews for a paper by the paper’s Id, where the paper was recommended to be
 //            published. The query should return the following data (columns): All columns from the
 //            Review table.
-            getReviewDetailsForRecomendedToPublished(conn);
+            getReviewDetailsForRecommendedToPublished(conn);
+            lineSpacing();
 
 //            Get a count of all papers submitted.
             getCountOfSubmittedPaper(conn);
-
+            lineSpacing();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private static void lineSpacing() {
+        System.out.println();
+        System.out.println();
+        System.out.println("----------------------------------------------");
+        System.out.println();
+        System.out.println();
     }
 
     private static void getPaperAuthorDetailsByAuthorId(String key, Connection conn) {
@@ -73,22 +83,63 @@ public class PaperReviewDriver {
 
     }
 
-    private static void getReviewDetailsForRecomendedToPublished(Connection conn) {
+    private static void getReviewDetailsForRecommendedToPublished(Connection conn) {
 
-//        try {
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+       try {
+        Statement stmt = conn.createStatement();
+
+        String sqlStr = "SELECT " +
+                " paper.Id as id1,"+
+                " review.PaperId as paper_id, " +
+                " review.ReviewerId as reviewerid, " +
+                " review.Recommendation as recommendation, " +
+                " review.MeritScore as mscore," +
+                " review.ReadabilityScore as rscore, " +
+                " review.OriginalityScore as oscore," +
+                " review.RelevanceScore as relscore" +
+                " FROM " +
+                " review,paper" +
+                " where " +
+                " paper.Id = review.PaperId" +
+                " and review.Recommendation = 'The paper should be read'";
+
+        ResultSet rset = stmt.executeQuery(sqlStr);
+
+        while (rset.next()) {
+            System.out.println("Id is " + rset.getInt("id1"));
+            System.out.println("Paper Id is " + rset.getString("paper_id"));
+            System.out.println("revierId is " + rset.getString("reviewerid"));
+            System.out.println("Recommendation is " + rset.getString("recommendation"));
+            System.out.println("Merit Score is " + rset.getInt("mscore"));
+            System.out.println("Readability score is " + rset.getInt("rscore"));
+            System.out.println("Originality score is " + rset.getInt("oscore"));
+            System.out.println("Relevance score is " + rset.getInt("relscore"));
+            System.out.println();
+            System.out.println();
+        }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void getCountOfSubmittedPaper(Connection conn) {
 
-//        try {
-//          SELECT COUNT(*) as count FROM paper_reviews.review;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Statement stmt = conn.createStatement();
+
+            String sqlStr = "SELECT" +
+                    " COUNT(*) as count"+
+                    " FROM " +
+                    " paper_reviews.review";
+            ResultSet rset = stmt.executeQuery(sqlStr);
+            while (rset.next()) {
+                System.out.println("Count is " + rset.getInt("count"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
