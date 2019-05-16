@@ -33,11 +33,25 @@ public class PaperReviewDriver {
             getCountOfSubmittedPaper(conn);
             lineSpacing();
 
+//            Create a new paper submission. Remember this includes creating new records in both
+//            the Author and Paper tables.
+            cretaeNewPaperAndAuthorSubmission(conn);
+            lineSpacing();
+
+//            Try and Delete the first “Author” row in your Author table by the author’s id. Did you
+//            receive an error? If yes, print to the console the error you received. Also note in your
+//            message why the query failed. If it didn’t fail, print a message explaining why you were
+//            able to delete the row.
+            deleteFirstAuthor(conn);
+            lineSpacing();
+
+
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
     }
+
 
     private static void lineSpacing() {
         System.out.println();
@@ -85,38 +99,38 @@ public class PaperReviewDriver {
 
     private static void getReviewDetailsForRecommendedToPublished(Connection conn) {
 
-       try {
-        Statement stmt = conn.createStatement();
+        try {
+            Statement stmt = conn.createStatement();
 
-        String sqlStr = "SELECT " +
-                " paper.Id as id1,"+
-                " review.PaperId as paper_id, " +
-                " review.ReviewerId as reviewerid, " +
-                " review.Recommendation as recommendation, " +
-                " review.MeritScore as mscore," +
-                " review.ReadabilityScore as rscore, " +
-                " review.OriginalityScore as oscore," +
-                " review.RelevanceScore as relscore" +
-                " FROM " +
-                " review,paper" +
-                " where " +
-                " paper.Id = review.PaperId" +
-                " and review.Recommendation = 'The paper should be read'";
+            String sqlStr = "SELECT " +
+                    " paper.Id as id1," +
+                    " review.PaperId as paper_id, " +
+                    " review.ReviewerId as reviewerid, " +
+                    " review.Recommendation as recommendation, " +
+                    " review.MeritScore as mscore," +
+                    " review.ReadabilityScore as rscore, " +
+                    " review.OriginalityScore as oscore," +
+                    " review.RelevanceScore as relscore" +
+                    " FROM " +
+                    " review,paper" +
+                    " where " +
+                    " paper.Id = review.PaperId" +
+                    " and review.Recommendation = 'The paper should be read'";
 
-        ResultSet rset = stmt.executeQuery(sqlStr);
+            ResultSet rset = stmt.executeQuery(sqlStr);
 
-        while (rset.next()) {
-            System.out.println("Id is " + rset.getInt("id1"));
-            System.out.println("Paper Id is " + rset.getString("paper_id"));
-            System.out.println("revierId is " + rset.getString("reviewerid"));
-            System.out.println("Recommendation is " + rset.getString("recommendation"));
-            System.out.println("Merit Score is " + rset.getInt("mscore"));
-            System.out.println("Readability score is " + rset.getInt("rscore"));
-            System.out.println("Originality score is " + rset.getInt("oscore"));
-            System.out.println("Relevance score is " + rset.getInt("relscore"));
-            System.out.println();
-            System.out.println();
-        }
+            while (rset.next()) {
+                System.out.println("Id is " + rset.getInt("id1"));
+                System.out.println("Paper Id is " + rset.getString("paper_id"));
+                System.out.println("revierId is " + rset.getString("reviewerid"));
+                System.out.println("Recommendation is " + rset.getString("recommendation"));
+                System.out.println("Merit Score is " + rset.getInt("mscore"));
+                System.out.println("Readability score is " + rset.getInt("rscore"));
+                System.out.println("Originality score is " + rset.getInt("oscore"));
+                System.out.println("Relevance score is " + rset.getInt("relscore"));
+                System.out.println();
+                System.out.println();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,7 +143,7 @@ public class PaperReviewDriver {
             Statement stmt = conn.createStatement();
 
             String sqlStr = "SELECT" +
-                    " COUNT(*) as count"+
+                    " COUNT(*) as count" +
                     " FROM " +
                     " paper_reviews.review";
             ResultSet rset = stmt.executeQuery(sqlStr);
@@ -140,6 +154,62 @@ public class PaperReviewDriver {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private static void cretaeNewPaperAndAuthorSubmission(Connection conn) {
+
+        try {
+            Statement ps = conn
+                    .createStatement();
+            String paperDeleteSql = "delete from Paper where Id=4";
+            String authorDeleteSql = "delete from Author where EmailAddr='danbrown@author.com'";
+            ps.executeUpdate(paperDeleteSql);
+            ps.executeUpdate(authorDeleteSql);
+
+
+            String authorSql = "insert into Author (EmailAddr, FirstName, LastName)" +
+                    "values('danbrown@author.com','Dan','Brown')";
+
+
+            int i = ps.executeUpdate(authorSql);
+            if (i > 0)
+                System.out.print("Thank you! You have successfully registered an author...");
+
+            String paperSql = " INSERT INTO PAPER (Id, Title, Abstract, FileName,AuthorId)" +
+                    " VALUES (4, 'food', 'benefits of food', 'food.pdf' ,'danbrown@author.com' )";
+
+            System.out.println();
+            int j = ps.executeUpdate(paperSql);
+            if (j > 0)
+                System.out.print("Thank you! You have successfully submitted a paper...");
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private static void deleteFirstAuthor(Connection conn) {
+
+        try {
+            Statement ps = conn
+                    .createStatement();
+            String firstAuthorDeleteSql = "delete from Author where EmailAddr='jamespatterson@author.com'";
+
+            System.out.println();
+            int j = ps.executeUpdate(firstAuthorDeleteSql);
+            if (j > 0)
+                System.out.print("first author successfully deleted...");
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.print("First author cannot be deleted since there is already a paper assigned to this author");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }
