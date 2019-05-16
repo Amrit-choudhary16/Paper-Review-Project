@@ -20,30 +20,30 @@ public class PaperReviewDriver {
 //            Get a submitted paper’s details by the author’s Primary Key. The query should return the
 //            following data (columns): Paper.Id, Paper.Title, Paper.Abstract, Author.EmailAddress,
 //            Author.FirstName, Author.LastName
+            lineSpacing("One");
             getPaperAuthorDetailsByAuthorId("jamespatterson@author.com", conn);
-            lineSpacing();
 
 //            Get all reviews for a paper by the paper’s Id, where the paper was recommended to be
 //            published. The query should return the following data (columns): All columns from the
 //            Review table.
+            lineSpacing("Two");
             getReviewDetailsForRecommendedToPublished(conn);
-            lineSpacing();
 
 //            Get a count of all papers submitted.
+            lineSpacing("Three");
             getCountOfSubmittedPaper(conn);
-            lineSpacing();
 
 //            Create a new paper submission. Remember this includes creating new records in both
 //            the Author and Paper tables.
-            cretaeNewPaperAndAuthorSubmission(conn);
-            lineSpacing();
+            lineSpacing("Four");
+            createNewPaperAndAuthorSubmission(conn);
 
 //            Try and Delete the first “Author” row in your Author table by the author’s id. Did you
 //            receive an error? If yes, print to the console the error you received. Also note in your
 //            message why the query failed. If it didn’t fail, print a message explaining why you were
 //            able to delete the row.
+            lineSpacing("Five");
             deleteFirstAuthor(conn);
-            lineSpacing();
 
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -53,10 +53,10 @@ public class PaperReviewDriver {
     }
 
 
-    private static void lineSpacing() {
+    private static void lineSpacing(String problemNumber) {
         System.out.println();
         System.out.println();
-        System.out.println("----------------------------------------------");
+        System.out.println("-------------------Problem Number "+problemNumber+"---------------------------");
         System.out.println();
         System.out.println();
     }
@@ -157,7 +157,7 @@ public class PaperReviewDriver {
     }
 
 
-    private static void cretaeNewPaperAndAuthorSubmission(Connection conn) {
+    private static void createNewPaperAndAuthorSubmission(Connection conn) {
 
         try {
             Statement ps = conn
