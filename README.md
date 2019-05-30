@@ -16,3 +16,5 @@ Part 1
    mysql> source FOLDER_PATH/sql_scripts/4_alter_database_schema.sql
 8. Run the following command to insert data into the paper table
    mysql> source FOLDER_PATH/sql_scripts/5_update_database_values.sql
+   
+   
